@@ -1,3 +1,4 @@
+/*
 MIT License
 
 Copyright (c) 2017 Simon Schmidt
@@ -19,3 +20,29 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+*/
+
+/* firewall config parser */
+package config
+
+import "github.com/lytics/confl"
+
+type Pair struct {
+	From string `json:"from"`
+	To string   `json:"to"`
+}
+type Filter struct {
+	IP Pair `json:"ip"`
+	Port Pair `json:"port"`
+	Type string `json:"type"`
+	Action string `json:"action"`
+}
+
+type Filters map[string][]Filter
+
+func Load(data []byte) (f Filters,e error) {
+	e = confl.Unmarshal(data,&f)
+	return
+}
+
+
