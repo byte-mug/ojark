@@ -27,6 +27,18 @@ package config
 
 import "github.com/lytics/confl"
 
+type Flags struct {
+	/* TCP flags */
+	FIN string `json:"fin"`
+	SYN string `json:"syn"`
+	RST string `json:"rst"`
+	PSH string `json:"psh"`
+	ACK string `json:"ack"`
+	URG string `json:"urg"`
+	ECE string `json:"ece"`
+	CWR string `json:"cwr"`
+	NS string `json:"ns"`
+}
 type Pair struct {
 	From string `json:"from"`
 	To string   `json:"to"`
@@ -36,11 +48,25 @@ type Filter struct {
 	Port Pair `json:"port"`
 	Type string `json:"type"`
 	Action string `json:"action"`
+	Flags Flags `json:"flags"`
 }
 
 type Filters map[string][]Filter
 
-func Load(data []byte) (f Filters,e error) {
+type IPSets map[string][]string
+type PortSets map[string][]string
+
+type GeneralConfig struct{
+	IPSets   IPSets   `json:"ipset"`
+	PortSets PortSets `json:"portset"`
+	Filters  Filters  `json:"filter"`
+}
+
+func LoadFilters(data []byte) (f Filters,e error) {
+	e = confl.Unmarshal(data,&f)
+	return
+}
+func Load(data []byte) (f GeneralConfig,e error) {
 	e = confl.Unmarshal(data,&f)
 	return
 }
